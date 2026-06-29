@@ -1,6 +1,8 @@
 import 'package:my_player/app/di/injection_container.dart';
 import 'package:my_player/core/platform/media_store_channel.dart';
 import 'package:my_player/core/repository/permission_repository.dart';
+import 'package:my_player/core/service/audioplayer/player_service.dart';
+import 'package:my_player/core/service/audioplayer/player_service.impl.dart';
 import 'package:my_player/core/service/permission_service.dart';
 import 'package:my_player/core/usecase/request_audio_permission_use_case.dart';
 
@@ -10,6 +12,7 @@ Future<void> initCore() async {
 
   //service
   sl.registerLazySingleton<PermissionService>(() => PermissionServiceImpl());
+  sl.registerLazySingleton<PlayerService>(() => PlayerServiceImpl());
 
   //repository
   sl.registerLazySingleton<PermissionRepository>(

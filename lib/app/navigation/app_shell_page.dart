@@ -5,7 +5,6 @@ import 'package:my_player/app/navigation/bloc/bottom_nav_bloc.dart';
 import 'package:my_player/app/navigation/bloc/bottom_nav_event.dart';
 import 'package:my_player/app/navigation/bloc/bottom_nav_state.dart';
 import 'package:my_player/app/navigation/enum/app_tab.dart';
-import 'package:my_player/features/library/presentation/pages/library_page.dart';
 
 class AppShell extends StatelessWidget {
   const AppShell({super.key});
@@ -28,16 +27,5 @@ class AppShell extends StatelessWidget {
         );
       },
     );
-  }
-
-  List<Widget> get pages => const [
-    Center(child: Text("Home")),
-    LibraryPage(),
-    Center(child: Text("Search")),
-    Center(child: Text("Settings")),
-  ];
-
-  int tabToIndex(AppTab tab) {
-    return appTabs.indexOf(tab);
   }
 }

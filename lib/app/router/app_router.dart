@@ -4,6 +4,8 @@ import 'package:my_player/app/navigation/app_shell_page.dart';
 import 'package:my_player/app/navigation/bloc/bottom_nav_bloc.dart';
 import 'package:my_player/app/router/route_names.dart';
 import 'package:my_player/app/router/route_paths.dart';
+import 'package:my_player/features/library/domain/entities/song_entity.dart';
+import 'package:my_player/features/player/presentation/pages/player_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: RoutePaths.shell,
@@ -17,6 +19,15 @@ final GoRouter appRouter = GoRouter(
           create: (context) => BottomNavBloc(),
           child: const AppShell(),
         );
+      },
+    ),
+
+    GoRoute(
+      path: RoutePaths.player,
+      name: RouteNames.player,
+      builder: (context, state) {
+        final song = state.extra as SongEntity;
+        return PlayerPage(song: song);
       },
     ),
   ],

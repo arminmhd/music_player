@@ -15,7 +15,7 @@ abstract final class AppIcons {
   static const next = Icon(Icons.skip_next_rounded);
   static const previous = Icon(Icons.skip_previous_rounded);
   static const shuffle = Icon(Icons.shuffle_rounded);
-  static const repeat = Icons.repeat_rounded;
+  static const repeat = Icon(Icons.repeat_rounded);
 
   // Library
   static const album = Icon(Icons.album_rounded);
@@ -25,7 +25,7 @@ abstract final class AppIcons {
   static const chevronRight = Icon(Icons.chevron_right_rounded);
 
   // Actions
-  static const favorite = Icons.favorite_border_rounded;
+  static const favorite = Icon(Icons.favorite_border_rounded);
   static const favoriteFilled = Icons.favorite_rounded;
   static const more = Icon(Icons.more_vert_rounded);
   static const add = Icons.add_rounded;
@@ -35,6 +35,7 @@ abstract final class AppIcons {
   // Status
   static const check = Icons.check_rounded;
   static const close = Icons.close_rounded;
+  static const arrowDown = Icon(Icons.keyboard_arrow_down_rounded);
   static const error = Icons.error_outline_rounded;
   static const warning = Icons.warning_amber_rounded;
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:my_player/app/router/route_names.dart';
 import 'package:my_player/features/library/domain/enum/library_tab.dart';
 import 'package:my_player/features/library/presentation/bloc/library_bloc.dart';
 import 'package:my_player/features/library/presentation/bloc/library_state.dart';
@@ -25,7 +27,12 @@ class LibraryTabContent extends StatelessWidget {
       builder: (context, state) {
         switch (state.selectedTab) {
           case LibraryTab.songs:
-            return LibrarySongList(songs: state.songs);
+            return LibrarySongList(
+              songs: state.songs,
+              onSongTap: (song) {
+                context.push(RouteNames.player, extra: song);
+              },
+            );
 
           case LibraryTab.albums:
             return AlbumList(albums: state.albums);
