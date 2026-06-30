@@ -46,7 +46,7 @@ class PlayerServiceImpl implements PlayerService {
   Stream<Duration?> get durationStream => _player.durationStream;
 
   @override
-  Stream<PlayerState> get playerStateStream => _player.playerStateStream;
+  Stream<PlayerState> get playbackStateStream => _player.playerStateStream;
 
   @override
   Future<void> dispose() async {

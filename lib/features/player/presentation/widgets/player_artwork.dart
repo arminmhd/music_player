@@ -10,7 +10,7 @@ class PlayerArtwork extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: AppArtworkWidget(albumId: song.albumId, size: 300.r),
+      child: AppArtworkWidget(albumId: song.albumId, size: 300.w),
     );
   }
 }

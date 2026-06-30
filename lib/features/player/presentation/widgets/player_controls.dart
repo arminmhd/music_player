@@ -1,10 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:my_player/core/design_system/icons/app_icons.dart';
+import 'package:my_player/core/design_system/radius/app_radius.dart';
 import 'package:my_player/core/design_system/sizes/app_sizes.dart';
 import 'package:my_player/core/design_system/spacing/app_insets.dart';
+import 'package:my_player/core/extension/context/theme_extension.dart';
 
 class PlayerControls extends StatelessWidget {
-  const PlayerControls({super.key});
+  final bool isPlaying;
+  final bool isShuffleEnabled;
+  final bool isRepeatEnabled;
+
+  final VoidCallback? onShufflePressed;
+  final VoidCallback? onPreviousPressed;
+  final VoidCallback? onPlayPressed;
+  final VoidCallback? onPausePressed;
+  final VoidCallback? onNextPressed;
+  final VoidCallback? onRepeatPressed;
+
+  const PlayerControls({
+    super.key,
+    required this.isPlaying,
+    required this.isShuffleEnabled,
+    required this.isRepeatEnabled,
+    this.onShufflePressed,
+    this.onPreviousPressed,
+    this.onPlayPressed,
+    this.onPausePressed,
+    this.onNextPressed,
+    this.onRepeatPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,30 +37,51 @@ class PlayerControls extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // SHUFFLE
           IconButton(
-            onPressed: () {},
+            onPressed: onShufflePressed,
             icon: AppIcons.shuffle,
-            iconSize: AppSizes.iconMd,
+            color: isShuffleEnabled
+                ? context.colors.primary
+                : context.colors.onSurface,
+            iconSize: AppSizes.iconSm,
           ),
+
+          // PREVIOUS
           IconButton(
-            onPressed: () {},
+            onPressed: onPreviousPressed,
             icon: AppIcons.previous,
-            iconSize: AppSizes.iconMd,
+            iconSize: AppSizes.iconXl + 5,
           ),
-          IconButton(
-            onPressed: () {},
-            icon: AppIcons.play,
-            iconSize: AppSizes.iconLg,
+
+          // PLAY / PAUSE (MAIN)
+          Container(
+            decoration: BoxDecoration(
+              color: context.colors.secondary,
+              borderRadius: AppRadius.radiusFull,
+            ),
+            child: IconButton(
+              onPressed: isPlaying ? onPausePressed : onPlayPressed,
+              icon: isPlaying ? AppIcons.pause : AppIcons.play,
+              iconSize: AppSizes.iconXl + 5,
+            ),
           ),
+
+          // NEXT
           IconButton(
-            onPressed: () {},
+            onPressed: onNextPressed,
             icon: AppIcons.next,
-            iconSize: AppSizes.iconMd,
+            iconSize: AppSizes.iconXl + 5,
           ),
+
+          // REPEAT
           IconButton(
-            onPressed: () {},
+            onPressed: onRepeatPressed,
             icon: AppIcons.repeat,
-            iconSize: AppSizes.iconMd,
+            color: isShuffleEnabled
+                ? context.colors.primary
+                : context.colors.onSurface,
+            iconSize: AppSizes.iconSm,
           ),
         ],
       ),

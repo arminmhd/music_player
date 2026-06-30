@@ -24,20 +24,20 @@ class PlayerSlider extends StatelessWidget {
         .clamp(0.0, max == 0 ? 1.0 : max)
         .toDouble();
 
-    return Padding(
-      padding: AppInsets.horizontal,
-      child: Column(
-        children: [
-          Slider(
-            value: value,
-            min: 0,
-            max: max == 0 ? 1 : max,
-            onChanged: (newValue) {
-              onChanged?.call(Duration(milliseconds: newValue.toInt()));
-            },
-          ),
+    return Column(
+      children: [
+        Slider(
+          value: value,
+          min: 0,
+          max: max == 0 ? 1 : max,
+          onChanged: (newValue) {
+            onChanged?.call(Duration(milliseconds: newValue.toInt()));
+          },
+        ),
 
-          Row(
+        Padding(
+          padding: AppInsets.horizontal,
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppTextWidget(
@@ -48,8 +48,8 @@ class PlayerSlider extends StatelessWidget {
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

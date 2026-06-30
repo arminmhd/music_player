@@ -3,7 +3,7 @@ import 'package:just_audio/just_audio.dart';
 abstract interface class PlayerService {
   Stream<Duration> get positionStream;
 
-  Stream<PlayerState> get playerStateStream;
+  Stream<PlayerState> get playbackStateStream;
 
   Stream<Duration?> get durationStream;
 

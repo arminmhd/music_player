@@ -12,7 +12,7 @@ abstract final class AppRadius {
   static const double xl = 20;
   static const double xxl = 24;
 
-  static const double full = 50;
+  static const double full = 999;
 
   static BorderRadius radiusXs = BorderRadius.circular(xs);
   static BorderRadius radiusSm = BorderRadius.circular(sm);
@@ -20,4 +20,5 @@ abstract final class AppRadius {
   static BorderRadius radiusLg = BorderRadius.circular(lg);
   static BorderRadius radiusXl = BorderRadius.circular(xl);
   static BorderRadius radiusXxl = BorderRadius.circular(xxl);
+  static BorderRadius radiusFull = BorderRadius.circular(full);
 }

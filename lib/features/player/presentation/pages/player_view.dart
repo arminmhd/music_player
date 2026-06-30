@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_player/core/extension/context/theme_extension.dart';
 import 'package:my_player/core/widgets/layout/app_scaffold_widget.dart';
 import 'package:my_player/features/library/domain/entities/song_entity.dart';
 import 'package:my_player/features/player/presentation/bloc/player_bloc.dart';
+import 'package:my_player/features/player/presentation/bloc/player_event.dart';
 import 'package:my_player/features/player/presentation/bloc/player_state.dart';
 import 'package:my_player/features/player/presentation/widgets/player_app_bar.dart';
 import 'package:my_player/features/player/presentation/widgets/player_artwork.dart';
@@ -19,6 +21,7 @@ class PlayerView extends StatelessWidget {
     return BlocBuilder<PlayerBloc, PlayerState>(
       builder: (context, state) {
         return AppScaffoldWidget(
+          background: context.colors.primary.withValues(alpha: 0.3),
           safeArea: true,
           body: Column(
             children: [
@@ -32,14 +35,53 @@ class PlayerView extends StatelessWidget {
 
                     PlayerInfo(song: song),
 
-                    // PlayerSlider(
-                    //   value: 0,
-                    //   max: song.duration.toDouble(),
-                    //   position: '00:00',
-                    //   duration: _formatDuration(song.duration),
-                    //   onChanged: (_) {},
-                    // ),
-                    PlayerControls(),
+                    PlayerSlider(
+                      position: state.position,
+                      duration: state.duration,
+                      onChanged: (position) {
+                        context.read<PlayerBloc>().add(
+                          SeekPlayerEvent(position),
+                        );
+                      },
+                    ),
+
+                    PlayerControls(
+                      isPlaying: state.isPlaying,
+                      isShuffleEnabled: state.isShuffleEnabled,
+                      isRepeatEnabled: state.isRepeatEnabled,
+
+                      onPlayPressed: () {
+                        context.read<PlayerBloc>().add(const PlayPlayerEvent());
+                      },
+
+                      onPausePressed: () {
+                        context.read<PlayerBloc>().add(
+                          const PausePlayerEvent(),
+                        );
+                      },
+
+                      onNextPressed: () {
+                        context.read<PlayerBloc>().add(const NextSongEvent());
+                      },
+
+                      onPreviousPressed: () {
+                        context.read<PlayerBloc>().add(
+                          const PreviousSongEvent(),
+                        );
+                      },
+
+                      onShufflePressed: () {
+                        context.read<PlayerBloc>().add(
+                          const ToggleShuffleEvent(),
+                        );
+                      },
+
+                      onRepeatPressed: () {
+                        context.read<PlayerBloc>().add(
+                          const ToggleRepeatEvent(),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),

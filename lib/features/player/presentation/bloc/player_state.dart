@@ -6,6 +6,7 @@ class PlayerState extends Equatable {
 
   final bool isPlaying;
   final bool isLoading;
+  final bool isSeeking;
 
   final bool isShuffleEnabled;
   final bool isRepeatEnabled;
@@ -17,6 +18,7 @@ class PlayerState extends Equatable {
     this.currentSong,
     required this.isPlaying,
     required this.isLoading,
+    required this.isSeeking,
     required this.isShuffleEnabled,
     required this.isRepeatEnabled,
     required this.position,
@@ -28,6 +30,7 @@ class PlayerState extends Equatable {
       currentSong: null,
       isPlaying: false,
       isLoading: false,
+      isSeeking: false,
       isShuffleEnabled: false,
       isRepeatEnabled: false,
       position: Duration.zero,
@@ -37,17 +40,20 @@ class PlayerState extends Equatable {
 
   PlayerState copyWith({
     SongEntity? currentSong,
+    bool updateCurrentSong = false,
     bool? isPlaying,
     bool? isLoading,
+    bool? isSeeking,
     bool? isShuffleEnabled,
     bool? isRepeatEnabled,
     Duration? position,
     Duration? duration,
   }) {
     return PlayerState(
-      currentSong: currentSong ?? this.currentSong,
+      currentSong: updateCurrentSong ? currentSong : this.currentSong,
       isPlaying: isPlaying ?? this.isPlaying,
       isLoading: isLoading ?? this.isLoading,
+      isSeeking: isSeeking ?? this.isSeeking,
       isShuffleEnabled: isShuffleEnabled ?? this.isShuffleEnabled,
       isRepeatEnabled: isRepeatEnabled ?? this.isRepeatEnabled,
       position: position ?? this.position,
@@ -60,6 +66,7 @@ class PlayerState extends Equatable {
     currentSong,
     isPlaying,
     isLoading,
+    isSeeking,
     isShuffleEnabled,
     isRepeatEnabled,
     position,

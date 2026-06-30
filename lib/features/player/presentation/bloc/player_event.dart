@@ -1,15 +1,20 @@
 import 'package:equatable/equatable.dart';
 import 'package:my_player/features/library/domain/entities/song_entity.dart';
 
-class PlayerEvent extends Equatable {
+abstract class PlayerEvent extends Equatable {
   const PlayerEvent();
 
   @override
   List<Object?> get props => [];
 }
 
+/// ----------------------------
+/// UI Events
+/// ----------------------------
+
 class InitializePlayerEvent extends PlayerEvent {
   final SongEntity song;
+
   const InitializePlayerEvent(this.song);
 
   @override
@@ -26,6 +31,7 @@ class PausePlayerEvent extends PlayerEvent {
 
 class SeekPlayerEvent extends PlayerEvent {
   final Duration position;
+
   const SeekPlayerEvent(this.position);
 
   @override
@@ -46,4 +52,39 @@ class ToggleShuffleEvent extends PlayerEvent {
 
 class ToggleRepeatEvent extends PlayerEvent {
   const ToggleRepeatEvent();
+}
+
+class StopPlayerEvent extends PlayerEvent {
+  const StopPlayerEvent();
+}
+
+/// ----------------------------
+/// Internal Events
+/// ----------------------------
+
+class PositionChangedEvent extends PlayerEvent {
+  final Duration position;
+
+  const PositionChangedEvent(this.position);
+
+  @override
+  List<Object?> get props => [position];
+}
+
+class DurationChangedEvent extends PlayerEvent {
+  final Duration duration;
+
+  const DurationChangedEvent(this.duration);
+
+  @override
+  List<Object?> get props => [duration];
+}
+
+class PlaybackStateChangedEvent extends PlayerEvent {
+  final bool isPlaying;
+
+  const PlaybackStateChangedEvent(this.isPlaying);
+
+  @override
+  List<Object?> get props => [isPlaying];
 }

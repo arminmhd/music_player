@@ -1,15 +1,16 @@
 import 'package:just_audio/just_audio.dart';
+import 'package:my_player/features/library/domain/entities/song_entity.dart';
 
-abstract interface class AudioPlayerService {
+abstract interface class PlayerRepository {
   Stream<Duration> get positionStream;
-
-  Stream<PlayerState> get playerStateStream;
 
   Stream<Duration?> get durationStream;
 
+  Stream<PlayerState> get playbackStateStream;
+
   Future<void> initialize();
 
-  Future<void> setSong(String uri);
+  Future<void> loadSong(SongEntity song);
 
   Future<void> play();
 

@@ -36,7 +36,7 @@ class AppListTileWidget extends StatelessWidget {
               ),
             ),
 
-            if (trailing != null) trailing!,
+            ?trailing,
           ],
         ),
       ),
