@@ -12,20 +12,39 @@ import 'package:my_player/features/player/presentation/widgets/player_controls.d
 import 'package:my_player/features/player/presentation/widgets/player_info.dart';
 import 'package:my_player/features/player/presentation/widgets/player_slider.dart';
 
-class PlayerView extends StatelessWidget {
-  final SongEntity song;
-  const PlayerView({super.key, required this.song});
+class PlayerView extends StatefulWidget {
+  final List<SongEntity> queue;
+  final int initialIndex;
 
+  const PlayerView({
+    super.key,
+    required this.queue,
+    required this.initialIndex,
+  });
+
+  @override
+  State<PlayerView> createState() => _PlayerViewState();
+}
+
+class _PlayerViewState extends State<PlayerView> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlayerBloc, PlayerState>(
       builder: (context, state) {
+        final song = state.currentSong;
+
+        if (song == null) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
         return AppScaffoldWidget(
           background: context.colors.primary.withValues(alpha: 0.3),
           safeArea: true,
           body: Column(
             children: [
-              PlayerAppBar(),
+              const PlayerAppBar(),
 
               Expanded(
                 child: Column(
@@ -51,13 +70,11 @@ class PlayerView extends StatelessWidget {
                       isRepeatEnabled: state.isRepeatEnabled,
 
                       onPlayPressed: () {
-                        context.read<PlayerBloc>().add(const PlayPlayerEvent());
-                      },
-
-                      onPausePressed: () {
-                        context.read<PlayerBloc>().add(
-                          const PausePlayerEvent(),
-                        );
+                        if (state.isPlaying) {
+                          context.read<PlayerBloc>().add(PausePlayerEvent());
+                        } else {
+                          context.read<PlayerBloc>().add(PlayPlayerEvent());
+                        }
                       },
 
                       onNextPressed: () {

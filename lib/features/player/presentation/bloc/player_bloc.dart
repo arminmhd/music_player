@@ -38,24 +38,28 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     on<PositionChangedEvent>(_onPositionChanged);
     on<DurationChangedEvent>(_onDurationChanged);
     on<PlaybackStateChangedEvent>(_onPlaybackStateChanged);
+    on<NextSongEvent>(_onNextSong);
+    on<PreviousSongEvent>(_onPreviousSong);
   }
 
   Future<void> _onInitialize(
     InitializePlayerEvent event,
     Emitter<PlayerState> emit,
   ) async {
-    await _initializePlayer();
+    final song = event.queue[event.initialIndex];
 
-    await _loadSong(event.song);
-
-    emit(
-      state.copyWith(
-        currentSong: event.song,
-        updateCurrentSong: true,
-        duration: Duration(milliseconds: event.song.duration),
-        position: Duration.zero,
-      ),
+    final newState = state.copyWith(
+      queue: event.queue,
+      currentIndex: event.initialIndex,
+      duration: Duration(milliseconds: song.duration),
+      position: Duration.zero,
     );
+
+    emit(newState);
+
+    await _initializePlayer();
+    await _loadSong(song);
+    await _playSong();
   }
 
   Future<void> _onPlay(PlayPlayerEvent event, Emitter<PlayerState> emit) async {
@@ -98,6 +102,52 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     emit(state.copyWith(isPlaying: event.isPlaying));
   }
 
+  Future<void> _onNextSong(
+    NextSongEvent event,
+    Emitter<PlayerState> emit,
+  ) async {
+    if (state.queue.isEmpty) return;
+
+    if (state.currentIndex >= state.queue.length - 1) return;
+
+    final nextIndex = state.currentIndex + 1;
+    final nextSong = state.queue[nextIndex];
+
+    emit(
+      state.copyWith(
+        currentIndex: nextIndex,
+        position: Duration.zero,
+        duration: Duration(milliseconds: nextSong.duration),
+      ),
+    );
+
+    await _loadSong(nextSong);
+    await _playSong();
+  }
+
+  Future<void> _onPreviousSong(
+    PreviousSongEvent event,
+    Emitter<PlayerState> emit,
+  ) async {
+    if (state.queue.isEmpty) return;
+
+    if (state.currentIndex <= 0) return;
+
+    final previousIndex = state.currentIndex - 1;
+    final previousSong = state.queue[previousIndex];
+
+    emit(
+      state.copyWith(
+        currentIndex: previousIndex,
+        position: Duration.zero,
+        duration: Duration(milliseconds: previousSong.duration),
+      ),
+    );
+
+    await _loadSong(previousSong);
+    await _playSong();
+  }
+
   void _listenStreams() {
     _positionSubscription = _repository.positionStream.listen((position) {
       add(PositionChangedEvent(position));
@@ -119,8 +169,6 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     _positionSubscription?.cancel();
     _durationSubscription?.cancel();
     _playbackSubscription?.cancel();
-
-    _repository.dispose();
 
     return super.close();
   }

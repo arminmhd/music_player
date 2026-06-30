@@ -10,6 +10,7 @@ import 'package:my_player/features/library/presentation/widgets/artist/artist_li
 import 'package:my_player/features/library/presentation/widgets/folder/folder_list.dart';
 import 'package:my_player/features/library/presentation/widgets/genre/genre_list.dart';
 import 'package:my_player/features/library/presentation/widgets/song/library_song_list.dart';
+import 'package:my_player/features/player/data/model/player_route_args.dart';
 
 class LibraryTabContent extends StatelessWidget {
   const LibraryTabContent({super.key});
@@ -30,7 +31,15 @@ class LibraryTabContent extends StatelessWidget {
             return LibrarySongList(
               songs: state.songs,
               onSongTap: (song) {
-                context.push(RouteNames.player, extra: song);
+                final index = state.songs.indexOf(song);
+                if (index == -1) return;
+                context.push(
+                  RouteNames.player,
+                  extra: PlayerRouteArgs(
+                    queue: state.songs,
+                    initialIndex: index,
+                  ),
+                );
               },
             );
 

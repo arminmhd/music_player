@@ -34,6 +34,16 @@ class _AppArtworkWidgetState extends State<AppArtworkWidget> {
     _loadArtwork();
   }
 
+  @override
+  void didUpdateWidget(covariant AppArtworkWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.albumId != widget.albumId) {
+      _image = null;
+      _loadArtwork();
+    }
+  }
+
   Future<void> _loadArtwork() async {
     final result = await ArtworkCache.get(widget.albumId);
 

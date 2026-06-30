@@ -13,7 +13,6 @@ class PlayerControls extends StatelessWidget {
   final VoidCallback? onShufflePressed;
   final VoidCallback? onPreviousPressed;
   final VoidCallback? onPlayPressed;
-  final VoidCallback? onPausePressed;
   final VoidCallback? onNextPressed;
   final VoidCallback? onRepeatPressed;
 
@@ -25,7 +24,6 @@ class PlayerControls extends StatelessWidget {
     this.onShufflePressed,
     this.onPreviousPressed,
     this.onPlayPressed,
-    this.onPausePressed,
     this.onNextPressed,
     this.onRepeatPressed,
   });
@@ -61,7 +59,7 @@ class PlayerControls extends StatelessWidget {
               borderRadius: AppRadius.radiusFull,
             ),
             child: IconButton(
-              onPressed: isPlaying ? onPausePressed : onPlayPressed,
+              onPressed: onPlayPressed,
               icon: isPlaying ? AppIcons.pause : AppIcons.play,
               iconSize: AppSizes.iconXl + 5,
             ),

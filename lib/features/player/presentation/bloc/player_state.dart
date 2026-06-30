@@ -2,7 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:my_player/features/library/domain/entities/song_entity.dart';
 
 class PlayerState extends Equatable {
-  final SongEntity? currentSong;
+  final List<SongEntity> queue;
+  final int currentIndex;
 
   final bool isPlaying;
   final bool isLoading;
@@ -15,7 +16,8 @@ class PlayerState extends Equatable {
   final Duration duration;
 
   const PlayerState({
-    this.currentSong,
+    required this.queue,
+    required this.currentIndex,
     required this.isPlaying,
     required this.isLoading,
     required this.isSeeking,
@@ -27,7 +29,8 @@ class PlayerState extends Equatable {
 
   factory PlayerState.initial() {
     return const PlayerState(
-      currentSong: null,
+      queue: [],
+      currentIndex: 0,
       isPlaying: false,
       isLoading: false,
       isSeeking: false,
@@ -38,9 +41,14 @@ class PlayerState extends Equatable {
     );
   }
 
+  SongEntity? get currentSong {
+    if (queue.isEmpty) return null;
+    return queue[currentIndex];
+  }
+
   PlayerState copyWith({
-    SongEntity? currentSong,
-    bool updateCurrentSong = false,
+    List<SongEntity>? queue,
+    int? currentIndex,
     bool? isPlaying,
     bool? isLoading,
     bool? isSeeking,
@@ -50,7 +58,8 @@ class PlayerState extends Equatable {
     Duration? duration,
   }) {
     return PlayerState(
-      currentSong: updateCurrentSong ? currentSong : this.currentSong,
+      queue: queue ?? this.queue,
+      currentIndex: currentIndex ?? this.currentIndex,
       isPlaying: isPlaying ?? this.isPlaying,
       isLoading: isLoading ?? this.isLoading,
       isSeeking: isSeeking ?? this.isSeeking,
@@ -63,7 +72,8 @@ class PlayerState extends Equatable {
 
   @override
   List<Object?> get props => [
-    currentSong,
+    queue,
+    currentIndex,
     isPlaying,
     isLoading,
     isSeeking,

@@ -13,12 +13,16 @@ abstract class PlayerEvent extends Equatable {
 /// ----------------------------
 
 class InitializePlayerEvent extends PlayerEvent {
-  final SongEntity song;
+  final List<SongEntity> queue;
+  final int initialIndex;
 
-  const InitializePlayerEvent(this.song);
+  const InitializePlayerEvent({
+    required this.queue,
+    required this.initialIndex,
+  });
 
   @override
-  List<Object?> get props => [song];
+  List<Object?> get props => [queue, initialIndex];
 }
 
 class PlayPlayerEvent extends PlayerEvent {

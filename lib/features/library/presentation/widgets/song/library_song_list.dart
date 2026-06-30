@@ -27,7 +27,7 @@ class LibrarySongList extends StatelessWidget {
       margin: AppInsets.card,
       decoration: BoxDecoration(
         borderRadius: AppRadius.radiusSm,
-        color: context.colors.surfaceContainer,
+        color: context.colors.surfaceContainer.withValues(alpha: .3),
       ),
       child: ListView.builder(
         itemCount: songs.length,
