@@ -5,6 +5,7 @@ import 'package:my_player/features/library/domain/entities/song_entity.dart';
 
 class PlayerArtwork extends StatelessWidget {
   final SongEntity song;
+
   const PlayerArtwork({super.key, required this.song});
 
   @override

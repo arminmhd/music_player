@@ -6,12 +6,12 @@ ThemeData applySliderTheme(ThemeData theme) {
     sliderTheme: SliderThemeData(
       trackHeight: 4,
 
-      activeTrackColor: theme.colorScheme.primary,
+      activeTrackColor: theme.colorScheme.secondary,
       inactiveTrackColor: theme.colorScheme.surfaceContainerHighest,
 
-      thumbColor: theme.colorScheme.primary,
+      thumbColor: theme.colorScheme.secondary,
 
-      overlayColor: theme.colorScheme.primary.withValues(alpha: 0.12),
+      overlayColor: theme.colorScheme.secondary.withValues(alpha: 0.12),
 
       thumbShape: const RoundSliderOverlayShape(overlayRadius: AppRadius.lg),
 

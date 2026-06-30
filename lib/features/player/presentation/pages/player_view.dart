@@ -6,11 +6,11 @@ import 'package:my_player/features/library/domain/entities/song_entity.dart';
 import 'package:my_player/features/player/presentation/bloc/player_bloc.dart';
 import 'package:my_player/features/player/presentation/bloc/player_event.dart';
 import 'package:my_player/features/player/presentation/bloc/player_state.dart';
-import 'package:my_player/features/player/presentation/widgets/player_app_bar.dart';
-import 'package:my_player/features/player/presentation/widgets/player_artwork.dart';
-import 'package:my_player/features/player/presentation/widgets/player_controls.dart';
-import 'package:my_player/features/player/presentation/widgets/player_info.dart';
-import 'package:my_player/features/player/presentation/widgets/player_slider.dart';
+import 'package:my_player/features/player/presentation/widgets/player/player_app_bar.dart';
+import 'package:my_player/features/player/presentation/widgets/player/player_artwork.dart';
+import 'package:my_player/features/player/presentation/widgets/player/player_controls.dart';
+import 'package:my_player/features/player/presentation/widgets/player/player_info.dart';
+import 'package:my_player/features/player/presentation/widgets/player/player_slider.dart';
 
 class PlayerView extends StatefulWidget {
   final List<SongEntity> queue;
@@ -27,6 +27,17 @@ class PlayerView extends StatefulWidget {
 }
 
 class _PlayerViewState extends State<PlayerView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<PlayerBloc>().add(
+      InitializePlayerEvent(
+        queue: widget.queue,
+        initialIndex: widget.initialIndex,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlayerBloc, PlayerState>(

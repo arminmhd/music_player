@@ -30,6 +30,7 @@ class PlayerSlider extends StatelessWidget {
           value: value,
           min: 0,
           max: max == 0 ? 1 : max,
+
           onChanged: (newValue) {
             onChanged?.call(Duration(milliseconds: newValue.toInt()));
           },
