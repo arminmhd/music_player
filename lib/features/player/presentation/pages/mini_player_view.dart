@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:my_player/app/router/route_names.dart';
 import 'package:my_player/core/extension/context/theme_extension.dart';
 import 'package:my_player/features/player/presentation/bloc/player_bloc.dart';
 import 'package:my_player/features/player/presentation/bloc/player_event.dart';
@@ -25,6 +27,7 @@ class MiniPlayerView extends StatelessWidget {
         return Material(
           color: context.colors.surfaceContainerHighest,
           child: InkWell(
+            onTap: () => context.push(RouteNames.player),
             child: SizedBox(
               height: 64.h,
               child: Row(

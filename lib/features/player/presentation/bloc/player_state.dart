@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:my_player/features/library/domain/entities/song_entity.dart';
+import 'package:my_player/features/player/presentation/enum/repeate_enum.dart';
 
 class PlayerState extends Equatable {
   final List<SongEntity> queue;
@@ -10,7 +11,7 @@ class PlayerState extends Equatable {
   final bool isSeeking;
 
   final bool isShuffleEnabled;
-  final bool isRepeatEnabled;
+  final RepeatMode repeatMode;
 
   final Duration position;
   final Duration duration;
@@ -22,7 +23,7 @@ class PlayerState extends Equatable {
     required this.isLoading,
     required this.isSeeking,
     required this.isShuffleEnabled,
-    required this.isRepeatEnabled,
+    required this.repeatMode,
     required this.position,
     required this.duration,
   });
@@ -35,7 +36,7 @@ class PlayerState extends Equatable {
       isLoading: false,
       isSeeking: false,
       isShuffleEnabled: false,
-      isRepeatEnabled: false,
+      repeatMode: RepeatMode.off,
       position: Duration.zero,
       duration: Duration.zero,
     );
@@ -53,7 +54,7 @@ class PlayerState extends Equatable {
     bool? isLoading,
     bool? isSeeking,
     bool? isShuffleEnabled,
-    bool? isRepeatEnabled,
+    RepeatMode? repeatMode,
     Duration? position,
     Duration? duration,
   }) {
@@ -64,7 +65,7 @@ class PlayerState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       isSeeking: isSeeking ?? this.isSeeking,
       isShuffleEnabled: isShuffleEnabled ?? this.isShuffleEnabled,
-      isRepeatEnabled: isRepeatEnabled ?? this.isRepeatEnabled,
+      repeatMode: repeatMode ?? this.repeatMode,
       position: position ?? this.position,
       duration: duration ?? this.duration,
     );
@@ -78,7 +79,7 @@ class PlayerState extends Equatable {
     isLoading,
     isSeeking,
     isShuffleEnabled,
-    isRepeatEnabled,
+    repeatMode,
     position,
     duration,
   ];

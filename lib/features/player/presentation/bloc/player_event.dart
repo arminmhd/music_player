@@ -62,6 +62,10 @@ class StopPlayerEvent extends PlayerEvent {
   const StopPlayerEvent();
 }
 
+class SongCompletedEvent extends PlayerEvent {
+  const SongCompletedEvent();
+}
+
 /// ----------------------------
 /// Internal Events
 /// ----------------------------

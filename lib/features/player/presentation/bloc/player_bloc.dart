@@ -8,6 +8,8 @@ import 'package:my_player/features/player/domain/usecase/play_song_use_case.dart
 import 'package:my_player/features/player/domain/usecase/seek_song_use_case.dart';
 import 'player_event.dart';
 import 'player_state.dart';
+import '../enum/repeate_enum.dart';
+import 'package:just_audio/just_audio.dart' as just_audio;
 
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   final InitializePlayerUseCase _initializePlayer;
@@ -20,7 +22,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   StreamSubscription<Duration>? _positionSubscription;
   StreamSubscription<Duration?>? _durationSubscription;
   StreamSubscription<dynamic>? _playbackSubscription;
-
+  StreamSubscription<just_audio.ProcessingState>? _processingSubscription;
   PlayerBloc({
     required this._initializePlayer,
     required this._loadSong,
@@ -40,6 +42,9 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     on<PlaybackStateChangedEvent>(_onPlaybackStateChanged);
     on<NextSongEvent>(_onNextSong);
     on<PreviousSongEvent>(_onPreviousSong);
+    on<ToggleShuffleEvent>(_onToggleShuffle);
+    on<ToggleRepeatEvent>(_onToggleRepeat);
+    on<SongCompletedEvent>(_onSongCompleted);
   }
 
   Future<void> _onInitialize(
@@ -58,6 +63,21 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     emit(newState);
 
     await _initializePlayer();
+    await _loadSong(song);
+    await _playSong();
+  }
+
+  Future<void> _playSongAtIndex(int index, Emitter<PlayerState> emit) async {
+    final song = state.queue[index];
+
+    emit(
+      state.copyWith(
+        currentIndex: index,
+        position: Duration.zero,
+        duration: Duration(milliseconds: song.duration),
+      ),
+    );
+
     await _loadSong(song);
     await _playSong();
   }
@@ -111,18 +131,8 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     if (state.currentIndex >= state.queue.length - 1) return;
 
     final nextIndex = state.currentIndex + 1;
-    final nextSong = state.queue[nextIndex];
 
-    emit(
-      state.copyWith(
-        currentIndex: nextIndex,
-        position: Duration.zero,
-        duration: Duration(milliseconds: nextSong.duration),
-      ),
-    );
-
-    await _loadSong(nextSong);
-    await _playSong();
+    await _playSongAtIndex(nextIndex, emit);
   }
 
   Future<void> _onPreviousSong(
@@ -134,18 +144,8 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     if (state.currentIndex <= 0) return;
 
     final previousIndex = state.currentIndex - 1;
-    final previousSong = state.queue[previousIndex];
 
-    emit(
-      state.copyWith(
-        currentIndex: previousIndex,
-        position: Duration.zero,
-        duration: Duration(milliseconds: previousSong.duration),
-      ),
-    );
-
-    await _loadSong(previousSong);
-    await _playSong();
+    await _playSongAtIndex(previousIndex, emit);
   }
 
   void _listenStreams() {
@@ -162,6 +162,48 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     ) {
       add(PlaybackStateChangedEvent(playerState.playing));
     });
+
+    _processingSubscription = _repository.processingStateStream.listen((state) {
+      if (state == just_audio.ProcessingState.completed) {
+        add(const SongCompletedEvent());
+      }
+    });
+  }
+
+  void _onToggleShuffle(ToggleShuffleEvent event, Emitter<PlayerState> emit) {
+    emit(state.copyWith(isShuffleEnabled: !state.isShuffleEnabled));
+  }
+
+  void _onToggleRepeat(ToggleRepeatEvent event, Emitter<PlayerState> emit) {
+    final nextMode = switch (state.repeatMode) {
+      RepeatMode.off => RepeatMode.all,
+      RepeatMode.all => RepeatMode.one,
+      RepeatMode.one => RepeatMode.off,
+    };
+
+    emit(state.copyWith(repeatMode: nextMode));
+  }
+
+  Future<void> _onSongCompleted(
+    SongCompletedEvent event,
+    Emitter<PlayerState> emit,
+  ) async {
+    if (state.queue.isEmpty) return;
+
+    switch (state.repeatMode) {
+      case RepeatMode.one:
+        await _playSongAtIndex(state.currentIndex, emit);
+      case RepeatMode.all:
+        final nextIndex = state.currentIndex == state.queue.length - 1
+            ? 0
+            : state.currentIndex + 1;
+        await _playSongAtIndex(nextIndex, emit);
+      case RepeatMode.off:
+        if (state.currentIndex < state.queue.length - 1) {
+          await _playSongAtIndex(state.currentIndex, emit);
+        }
+        break;
+    }
   }
 
   @override

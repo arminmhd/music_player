@@ -7,6 +7,8 @@ abstract interface class PlayerService {
 
   Stream<Duration?> get durationStream;
 
+  Stream<ProcessingState> get processingStateStream;
+
   Future<void> initialize();
 
   Future<void> setSong(String uri);

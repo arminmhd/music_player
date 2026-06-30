@@ -4,7 +4,6 @@ import 'package:my_player/app/navigation/app_shell_page.dart';
 import 'package:my_player/app/navigation/bloc/bottom_nav_bloc.dart';
 import 'package:my_player/app/router/route_names.dart';
 import 'package:my_player/app/router/route_paths.dart';
-import 'package:my_player/features/player/data/model/player_route_args.dart';
 import 'package:my_player/features/player/presentation/pages/player_page.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -26,8 +25,7 @@ final GoRouter appRouter = GoRouter(
       path: RoutePaths.player,
       name: RouteNames.player,
       builder: (context, state) {
-        final args = state.extra as PlayerRouteArgs;
-        return PlayerPage(queue: args.queue, initialIndex: args.initialIndex);
+        return PlayerPage();
       },
     ),
   ],

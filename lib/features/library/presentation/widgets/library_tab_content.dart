@@ -11,6 +11,8 @@ import 'package:my_player/features/library/presentation/widgets/folder/folder_li
 import 'package:my_player/features/library/presentation/widgets/genre/genre_list.dart';
 import 'package:my_player/features/library/presentation/widgets/song/library_song_list.dart';
 import 'package:my_player/features/player/data/model/player_route_args.dart';
+import 'package:my_player/features/player/presentation/bloc/player_bloc.dart';
+import 'package:my_player/features/player/presentation/bloc/player_event.dart';
 
 class LibraryTabContent extends StatelessWidget {
   const LibraryTabContent({super.key});
@@ -33,6 +35,12 @@ class LibraryTabContent extends StatelessWidget {
               onSongTap: (song) {
                 final index = state.songs.indexOf(song);
                 if (index == -1) return;
+                context.read<PlayerBloc>().add(
+                  InitializePlayerEvent(
+                    queue: state.songs,
+                    initialIndex: index,
+                  ),
+                );
                 context.push(
                   RouteNames.player,
                   extra: PlayerRouteArgs(

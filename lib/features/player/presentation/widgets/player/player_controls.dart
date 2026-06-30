@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide RepeatMode;
 import 'package:my_player/core/design_system/icons/app_icons.dart';
 import 'package:my_player/core/design_system/radius/app_radius.dart';
 import 'package:my_player/core/design_system/sizes/app_sizes.dart';
 import 'package:my_player/core/design_system/spacing/app_insets.dart';
 import 'package:my_player/core/extension/context/theme_extension.dart';
+import '../../enum/repeate_enum.dart';
 
 class PlayerControls extends StatelessWidget {
   final bool isPlaying;
   final bool isShuffleEnabled;
-  final bool isRepeatEnabled;
+  final RepeatMode repeatMode;
 
   final VoidCallback? onShufflePressed;
   final VoidCallback? onPreviousPressed;
@@ -20,13 +21,30 @@ class PlayerControls extends StatelessWidget {
     super.key,
     required this.isPlaying,
     required this.isShuffleEnabled,
-    required this.isRepeatEnabled,
+    required this.repeatMode,
     this.onShufflePressed,
     this.onPreviousPressed,
     this.onPlayPressed,
     this.onNextPressed,
     this.onRepeatPressed,
   });
+
+  IconData _repeatIcon() {
+    switch (repeatMode) {
+      case RepeatMode.off:
+      case RepeatMode.all:
+        return Icons.repeat;
+
+      case RepeatMode.one:
+        return Icons.repeat_one;
+    }
+  }
+
+  Color _repeatColor(BuildContext context) {
+    return repeatMode == RepeatMode.off
+        ? context.colors.onSurface
+        : context.colors.primary;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +70,7 @@ class PlayerControls extends StatelessWidget {
             iconSize: AppSizes.iconXl + 5,
           ),
 
-          // PLAY / PAUSE (MAIN)
+          // PLAY / PAUSE
           Container(
             decoration: BoxDecoration(
               color: context.colors.secondary,
@@ -75,10 +93,8 @@ class PlayerControls extends StatelessWidget {
           // REPEAT
           IconButton(
             onPressed: onRepeatPressed,
-            icon: AppIcons.repeat,
-            color: isShuffleEnabled
-                ? context.colors.primary
-                : context.colors.onSurface,
+            icon: Icon(_repeatIcon()),
+            color: _repeatColor(context),
             iconSize: AppSizes.iconSm,
           ),
         ],

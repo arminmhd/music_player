@@ -52,4 +52,8 @@ class PlayerRepositoryImpl implements PlayerRepository {
   Future<void> dispose() {
     return _audioPlayerService.dispose();
   }
+
+  @override
+  Stream<ProcessingState> get processingStateStream =>
+      _audioPlayerService.processingStateStream;
 }

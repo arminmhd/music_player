@@ -21,4 +21,6 @@ abstract interface class PlayerRepository {
   Future<void> stop();
 
   Future<void> dispose();
+
+  Stream<ProcessingState> get processingStateStream;
 }

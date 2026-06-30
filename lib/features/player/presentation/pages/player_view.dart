@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_player/core/extension/context/theme_extension.dart';
 import 'package:my_player/core/widgets/layout/app_scaffold_widget.dart';
-import 'package:my_player/features/library/domain/entities/song_entity.dart';
 import 'package:my_player/features/player/presentation/bloc/player_bloc.dart';
 import 'package:my_player/features/player/presentation/bloc/player_event.dart';
 import 'package:my_player/features/player/presentation/bloc/player_state.dart';
@@ -13,31 +12,13 @@ import 'package:my_player/features/player/presentation/widgets/player/player_inf
 import 'package:my_player/features/player/presentation/widgets/player/player_slider.dart';
 
 class PlayerView extends StatefulWidget {
-  final List<SongEntity> queue;
-  final int initialIndex;
-
-  const PlayerView({
-    super.key,
-    required this.queue,
-    required this.initialIndex,
-  });
+  const PlayerView({super.key});
 
   @override
   State<PlayerView> createState() => _PlayerViewState();
 }
 
 class _PlayerViewState extends State<PlayerView> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<PlayerBloc>().add(
-      InitializePlayerEvent(
-        queue: widget.queue,
-        initialIndex: widget.initialIndex,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlayerBloc, PlayerState>(
@@ -78,7 +59,7 @@ class _PlayerViewState extends State<PlayerView> {
                     PlayerControls(
                       isPlaying: state.isPlaying,
                       isShuffleEnabled: state.isShuffleEnabled,
-                      isRepeatEnabled: state.isRepeatEnabled,
+                      repeatMode: state.repeatMode,
 
                       onPlayPressed: () {
                         if (state.isPlaying) {
