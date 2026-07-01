@@ -21,12 +21,14 @@ class PlayerView extends StatefulWidget {
 class _PlayerViewState extends State<PlayerView> {
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<PlayerBloc>();
+
     return BlocBuilder<PlayerBloc, PlayerState>(
       builder: (context, state) {
         final song = state.currentSong;
 
         if (song == null) {
-          return const Scaffold(
+          return const AppScaffoldWidget(
             body: Center(child: CircularProgressIndicator()),
           );
         }
@@ -63,32 +65,26 @@ class _PlayerViewState extends State<PlayerView> {
 
                       onPlayPressed: () {
                         if (state.isPlaying) {
-                          context.read<PlayerBloc>().add(PausePlayerEvent());
+                          bloc.add(PausePlayerEvent());
                         } else {
-                          context.read<PlayerBloc>().add(PlayPlayerEvent());
+                          bloc.add(PlayPlayerEvent());
                         }
                       },
 
                       onNextPressed: () {
-                        context.read<PlayerBloc>().add(const NextSongEvent());
+                        bloc.add(const NextSongEvent());
                       },
 
                       onPreviousPressed: () {
-                        context.read<PlayerBloc>().add(
-                          const PreviousSongEvent(),
-                        );
+                        bloc.add(const PreviousSongEvent());
                       },
 
                       onShufflePressed: () {
-                        context.read<PlayerBloc>().add(
-                          const ToggleShuffleEvent(),
-                        );
+                        bloc.add(const ToggleShuffleEvent());
                       },
 
                       onRepeatPressed: () {
-                        context.read<PlayerBloc>().add(
-                          const ToggleRepeatEvent(),
-                        );
+                        bloc.add(const ToggleRepeatEvent());
                       },
                     ),
                   ],

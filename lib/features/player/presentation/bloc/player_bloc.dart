@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_player/features/player/domain/repository/player_repository.dart';
 import 'package:my_player/features/player/domain/usecase/initialize_player_use_case.dart';
@@ -6,6 +7,7 @@ import 'package:my_player/features/player/domain/usecase/load_song_use_case.dart
 import 'package:my_player/features/player/domain/usecase/pause_song_use_case.dart';
 import 'package:my_player/features/player/domain/usecase/play_song_use_case.dart';
 import 'package:my_player/features/player/domain/usecase/seek_song_use_case.dart';
+import 'package:my_player/features/player/domain/usecase/toggle_shuffle_use_case.dart';
 import 'player_event.dart';
 import 'player_state.dart';
 import '../enum/repeate_enum.dart';
@@ -17,6 +19,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   final PlaySongUseCase _playSong;
   final PauseSongUseCase _pauseSong;
   final SeekSongUseCase _seekSong;
+  final ToggleShuffleUseCase _toggleShuffle;
   final PlayerRepository _repository;
 
   StreamSubscription<Duration>? _positionSubscription;
@@ -30,6 +33,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     required this._pauseSong,
     required this._seekSong,
     required this._repository,
+    required this._toggleShuffle,
   }) : super(PlayerState.initial()) {
     _listenStreams();
 
@@ -59,7 +63,6 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       duration: Duration(milliseconds: song.duration),
       position: Duration.zero,
     );
-
     emit(newState);
 
     await _initializePlayer();
@@ -70,6 +73,9 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   Future<void> _playSongAtIndex(int index, Emitter<PlayerState> emit) async {
     final song = state.queue[index];
 
+    await _loadSong(song);
+    await _playSong();
+
     emit(
       state.copyWith(
         currentIndex: index,
@@ -77,9 +83,6 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         duration: Duration(milliseconds: song.duration),
       ),
     );
-
-    await _loadSong(song);
-    await _playSong();
   }
 
   Future<void> _onPlay(PlayPlayerEvent event, Emitter<PlayerState> emit) async {
@@ -128,9 +131,19 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   ) async {
     if (state.queue.isEmpty) return;
 
-    if (state.currentIndex >= state.queue.length - 1) return;
+    int nextIndex;
 
-    final nextIndex = state.currentIndex + 1;
+    if (state.isShuffleEnabled) {
+      final random = Random();
+
+      do {
+        nextIndex = random.nextInt(state.queue.length);
+      } while (state.queue.length > 1 && nextIndex == state.currentIndex);
+    } else {
+      if (state.currentIndex >= state.queue.length - 1) return;
+
+      nextIndex = state.currentIndex + 1;
+    }
 
     await _playSongAtIndex(nextIndex, emit);
   }
@@ -141,9 +154,19 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   ) async {
     if (state.queue.isEmpty) return;
 
-    if (state.currentIndex <= 0) return;
+    int previousIndex;
 
-    final previousIndex = state.currentIndex - 1;
+    if (state.isShuffleEnabled) {
+      final random = Random();
+
+      do {
+        previousIndex = random.nextInt(state.queue.length);
+      } while (state.queue.length > 1 && previousIndex == state.currentIndex);
+    } else {
+      if (state.currentIndex <= 0) return;
+
+      previousIndex = state.currentIndex - 1;
+    }
 
     await _playSongAtIndex(previousIndex, emit);
   }
@@ -170,8 +193,15 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     });
   }
 
-  void _onToggleShuffle(ToggleShuffleEvent event, Emitter<PlayerState> emit) {
-    emit(state.copyWith(isShuffleEnabled: !state.isShuffleEnabled));
+  Future<void> _onToggleShuffle(
+    ToggleShuffleEvent event,
+    Emitter<PlayerState> emit,
+  ) async {
+    final enabled = !state.isShuffleEnabled;
+
+    await _toggleShuffle(enabled);
+
+    emit(state.copyWith(isShuffleEnabled: enabled));
   }
 
   void _onToggleRepeat(ToggleRepeatEvent event, Emitter<PlayerState> emit) {
@@ -200,7 +230,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         await _playSongAtIndex(nextIndex, emit);
       case RepeatMode.off:
         if (state.currentIndex < state.queue.length - 1) {
-          await _playSongAtIndex(state.currentIndex, emit);
+          await _playSongAtIndex(state.currentIndex + 1, emit);
         }
         break;
     }
@@ -211,6 +241,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     _positionSubscription?.cancel();
     _durationSubscription?.cancel();
     _playbackSubscription?.cancel();
+    _processingSubscription?.cancel();
 
     return super.close();
   }

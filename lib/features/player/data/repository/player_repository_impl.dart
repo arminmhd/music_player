@@ -56,4 +56,14 @@ class PlayerRepositoryImpl implements PlayerRepository {
   @override
   Stream<ProcessingState> get processingStateStream =>
       _audioPlayerService.processingStateStream;
+
+  @override
+  Future<bool> getShuffleMode() {
+    return _audioPlayerService.getShuffleMode();
+  }
+
+  @override
+  Future<void> setShuffleMode(bool enabled) {
+    return _audioPlayerService.getShuffleMode();
+  }
 }

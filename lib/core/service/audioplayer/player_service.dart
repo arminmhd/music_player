@@ -13,12 +13,12 @@ abstract interface class PlayerService {
 
   Future<void> setSong(String uri);
 
+  Future<void> setShuffleMode(bool enabled);
+  Future<bool> getShuffleMode();
+
   Future<void> play();
-
   Future<void> pause();
-
   Future<void> seek(Duration position);
-
   Future<void> stop();
 
   Future<void> dispose();

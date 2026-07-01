@@ -40,6 +40,20 @@ class PlayerServiceImpl implements PlayerService {
   }
 
   @override
+  Future<void> setShuffleMode(bool enabled) async {
+    await _player.setShuffleModeEnabled(enabled);
+
+    if (enabled) {
+      await player.shuffle();
+    }
+  }
+
+  @override
+  Future<bool> getShuffleMode() async {
+    return _player.shuffleModeEnabled;
+  }
+
+  @override
   Stream<Duration> get positionStream => _player.positionStream;
 
   @override

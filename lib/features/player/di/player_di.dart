@@ -6,6 +6,7 @@ import 'package:my_player/features/player/domain/usecase/load_song_use_case.dart
 import 'package:my_player/features/player/domain/usecase/pause_song_use_case.dart';
 import 'package:my_player/features/player/domain/usecase/play_song_use_case.dart';
 import 'package:my_player/features/player/domain/usecase/seek_song_use_case.dart';
+import 'package:my_player/features/player/domain/usecase/toggle_shuffle_use_case.dart';
 import 'package:my_player/features/player/presentation/bloc/player_bloc.dart';
 
 Future<void> initPlayerDependencies() async {
@@ -18,6 +19,7 @@ Future<void> initPlayerDependencies() async {
   sl.registerLazySingleton(() => PlaySongUseCase(sl()));
   sl.registerLazySingleton(() => PauseSongUseCase(sl()));
   sl.registerLazySingleton(() => SeekSongUseCase(sl()));
+  sl.registerLazySingleton(() => ToggleShuffleUseCase(sl()));
 
   //bloc
   sl.registerFactory(
@@ -28,6 +30,7 @@ Future<void> initPlayerDependencies() async {
       playSong: sl(),
       repository: sl(),
       seekSong: sl(),
+      toggleShuffle: sl(),
     ),
   );
 }

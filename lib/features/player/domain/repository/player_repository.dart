@@ -12,6 +12,9 @@ abstract interface class PlayerRepository {
 
   Future<void> loadSong(SongEntity song);
 
+  Future<void> setShuffleMode(bool enabled);
+  Future<bool> getShuffleMode();
+
   Future<void> play();
 
   Future<void> pause();
