@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:my_player/core/platform/media_store_channel.dart';
+import 'package:my_player/core/platform/media/media_store_channel.dart';
 
 class ArtworkCache {
   ArtworkCache._();

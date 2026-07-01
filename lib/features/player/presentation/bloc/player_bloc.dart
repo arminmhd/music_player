@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_player/core/service/notification/player_notification_facade.dart';
 import 'package:my_player/features/player/domain/repository/player_repository.dart';
 import 'package:my_player/features/player/domain/usecase/initialize_player_use_case.dart';
 import 'package:my_player/features/player/domain/usecase/load_song_use_case.dart';
@@ -15,6 +16,7 @@ import 'package:just_audio/just_audio.dart' as just_audio;
 
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   final InitializePlayerUseCase _initializePlayer;
+  final PlayerNotificationFacade _notification;
   final LoadSongUseCase _loadSong;
   final PlaySongUseCase _playSong;
   final PauseSongUseCase _pauseSong;
@@ -28,6 +30,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   StreamSubscription<just_audio.ProcessingState>? _processingSubscription;
   PlayerBloc({
     required this._initializePlayer,
+    required this._notification,
     required this._loadSong,
     required this._playSong,
     required this._pauseSong,
@@ -51,6 +54,14 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     on<SongCompletedEvent>(_onSongCompleted);
   }
 
+  String get _title => state.queue.isNotEmpty
+      ? state.queue[state.currentIndex].title
+      : 'Unknown';
+
+  String get _artist => state.queue.isNotEmpty
+      ? state.queue[state.currentIndex].artist
+      : 'Unknown';
+
   Future<void> _onInitialize(
     InitializePlayerEvent event,
     Emitter<PlayerState> emit,
@@ -67,6 +78,13 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
     await _initializePlayer();
     await _loadSong(song);
+
+    await _notification.show(
+      title: song.title,
+      artist: song.artist,
+      isPlaying: true,
+    );
+
     await _playSong();
   }
 
@@ -83,10 +101,12 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         duration: Duration(milliseconds: song.duration),
       ),
     );
+    await _notification.play(title: song.title, artist: song.artist);
   }
 
   Future<void> _onPlay(PlayPlayerEvent event, Emitter<PlayerState> emit) async {
     await _playSong();
+    await _notification.play(title: _title, artist: _artist);
   }
 
   Future<void> _onPause(
@@ -94,6 +114,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     Emitter<PlayerState> emit,
   ) async {
     await _pauseSong();
+    await _notification.pause(title: _title, artist: _artist);
   }
 
   Future<void> _onSeek(SeekPlayerEvent event, Emitter<PlayerState> emit) async {

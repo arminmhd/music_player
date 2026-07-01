@@ -1,4 +1,4 @@
-import 'package:my_player/core/platform/media_store_channel.dart';
+import 'package:my_player/core/platform/media/media_store_channel.dart';
 import 'package:my_player/features/library/data/datasources/library_local_data_source.dart';
 import 'package:my_player/features/library/data/model/album_model.dart';
 import 'package:my_player/features/library/data/model/artist_model.dart';

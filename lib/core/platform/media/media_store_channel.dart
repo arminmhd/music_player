@@ -1,11 +1,10 @@
 import 'package:flutter/services.dart';
+import 'package:my_player/core/platform/channel_names.dart';
 
 class MediaStoreChannel {
   const MediaStoreChannel();
 
-  static const MethodChannel _channel = MethodChannel(
-    'com.example.my_player/media_store',
-  );
+  static const MethodChannel _channel = MethodChannel(ChannelNames.mediaStore);
 
   Future<List<dynamic>> getSongs() async {
     final songs = await _channel.invokeMethod<List<dynamic>>('getSongs');

@@ -21,16 +21,17 @@ Future<void> initPlayerDependencies() async {
   sl.registerLazySingleton(() => SeekSongUseCase(sl()));
   sl.registerLazySingleton(() => ToggleShuffleUseCase(sl()));
 
-  //bloc
-  sl.registerFactory(
-    () => PlayerBloc(
-      initializePlayer: sl(),
-      loadSong: sl(),
-      pauseSong: sl(),
-      playSong: sl(),
-      repository: sl(),
-      seekSong: sl(),
-      toggleShuffle: sl(),
-    ),
+  // bloc
+  final playerBloc = PlayerBloc(
+    initializePlayer: sl(),
+    notification: sl(),
+    loadSong: sl(),
+    pauseSong: sl(),
+    playSong: sl(),
+    repository: sl(),
+    seekSong: sl(),
+    toggleShuffle: sl(),
   );
+
+  sl.registerLazySingleton<PlayerBloc>(() => playerBloc);
 }
